@@ -27,15 +27,16 @@ export const Footer = () => {
             <Text onBackground="neutral-weak">© {currentYear} /</Text>
             <Text onBackground="neutral-weak">
               {" "}
-              Built with <SmartLink href="https://once-ui.com">Once UI</SmartLink> / By <SmartLink href="https://hitomihiumi.xyz">hitomihiumi</SmartLink> 💜
+              Built with <SmartLink href="https://once-ui.com">Once UI</SmartLink> / By{" "}
+              <SmartLink href="https://hitomihiumi.xyz">hitomihiumi</SmartLink> 💜
             </Text>
           </Text>
           <Flex gap="16">
             <IconButton
-                icon='github'
-                variant='ghost'
-                target='_blank'
-                href='https://github.com/hitomihiumi/moetsukita.xyz'
+              icon="github"
+              variant="ghost"
+              target="_blank"
+              href="https://github.com/hitomihiumi/moetsukita.xyz"
             />
           </Flex>
         </Flex>
