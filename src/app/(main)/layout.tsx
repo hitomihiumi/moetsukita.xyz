@@ -18,7 +18,7 @@ import {
 } from "@once-ui-system/core";
 import { Providers } from "@/components/Providers";
 import { Footer } from "@/components/Footer";
-import {Analytics} from "@vercel/analytics/vue";
+import { Analytics } from "@vercel/analytics/next";
 
 export async function generateMetadata() {
   return Meta.generate({
