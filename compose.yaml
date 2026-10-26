@@ -1,4 +1,5 @@
-# Local stand-ins for Neon (Postgres) and Cloudflare R2 (RustFS, S3-compatible).
+# Development services for `npm run dev`: Postgres and RustFS (S3-compatible storage).
+# The production stack lives in deploy/compose.yaml.
 # `docker compose up -d`, then `npm run storage:setup` and `npm run db:migrate`.
 # The credentials match .env.example.
 services:

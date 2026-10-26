@@ -1,6 +1,6 @@
 /**
- * Applies the SQL migrations in drizzle/ — locally, and in the Vercel build
- * before `next build` (see package.json `vercel-build`).
+ * Applies the SQL migrations in drizzle/. In the production compose stack the
+ * `migrate` service runs it before the app starts.
  *
  *   npm run db:migrate
  */

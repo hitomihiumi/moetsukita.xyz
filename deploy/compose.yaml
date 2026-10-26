@@ -1,0 +1,151 @@
+# Production stack for one server: Caddy (HTTPS) → Next.js app, Postgres,
+# RustFS (S3-compatible file storage) and daily database backups.
+#
+#   cd deploy && cp .env.example .env   # then fill in .env
+#   docker compose up -d --build
+#
+# Only Caddy is reachable from outside (ports 80/443). Everything else talks
+# over the internal network; the RustFS console listens on 127.0.0.1:9001
+# (reach it with `ssh -L 9001:127.0.0.1:9001 your-server`).
+
+name: moetsukita
+
+x-tools: &tools
+  build:
+    context: ..
+    target: tools
+  image: moetsukita-tools
+  restart: "no"
+  environment: &tools-env
+    DATABASE_URL: postgres://moetsukita:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/moetsukita
+    S3_ENDPOINT: http://storage:9000
+    S3_PUBLIC_ENDPOINT: https://${FILES_DOMAIN}
+    S3_ACCESS_KEY_ID: ${STORAGE_ACCESS_KEY:?set STORAGE_ACCESS_KEY in .env}
+    S3_SECRET_ACCESS_KEY: ${STORAGE_SECRET_KEY:?set STORAGE_SECRET_KEY in .env}
+    S3_BUCKET: ${S3_BUCKET:-moetsukita}
+    S3_PUBLIC_BUCKET: ${S3_PUBLIC_BUCKET:-moetsukita-public}
+    S3_CORS_ORIGINS: https://${SITE_DOMAIN}
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp" # HTTP/3
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:?set SITE_DOMAIN in .env}
+      FILES_DOMAIN: ${FILES_DOMAIN:?set FILES_DOMAIN in .env}
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL in .env}
+      S3_BUCKET: ${S3_BUCKET:-moetsukita}
+      S3_PUBLIC_BUCKET: ${S3_PUBLIC_BUCKET:-moetsukita-public}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+      storage:
+        condition: service_healthy
+
+  app:
+    build:
+      context: ..
+      target: runner
+    image: moetsukita-app
+    restart: unless-stopped
+    # Auth and other secrets come from .env as is; the rest is wired here.
+    env_file: .env
+    environment:
+      <<: *tools-env
+      AUTH_URL: https://${SITE_DOMAIN}
+      # Caddy sits in front and sets the X-Forwarded-* headers.
+      AUTH_TRUST_HOST: "true"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      storage-setup:
+        condition: service_completed_successfully
+
+  # Applies database migrations, then exits; the app waits for it.
+  migrate:
+    <<: *tools
+    command: ["npm", "run", "db:migrate"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Creates buckets, CORS, lifecycle and the public-bucket policy, then exits.
+  storage-setup:
+    <<: *tools
+    command: ["npm", "run", "storage:setup"]
+    depends_on:
+      storage:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: moetsukita
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: moetsukita
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U moetsukita -d moetsukita"]
+      interval: 5s
+      retries: 20
+
+  storage:
+    image: rustfs/rustfs:1.0.4
+    restart: unless-stopped
+    environment:
+      RUSTFS_ACCESS_KEY: ${STORAGE_ACCESS_KEY}
+      RUSTFS_SECRET_KEY: ${STORAGE_SECRET_KEY}
+      RUSTFS_CONSOLE_ENABLE: "true"
+    ports:
+      - "127.0.0.1:9001:9001" # web console, local only
+    volumes:
+      - storage:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:9000/health"]
+      interval: 5s
+      retries: 20
+
+  # Daily compressed dump into ./backups, keeping the last BACKUP_KEEP_DAYS days.
+  backup:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      PGHOST: postgres
+      PGUSER: moetsukita
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: moetsukita
+      KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+    volumes:
+      - ./backups:/backups
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        while true; do
+          file="/backups/moetsukita-$$(date +%Y%m%d-%H%M%S).sql.gz"
+          if pg_dump --no-owner | gzip > "$$file.tmp"; then
+            mv "$$file.tmp" "$$file" && echo "backup: $$file"
+          else
+            rm -f "$$file.tmp" && echo "backup failed" >&2
+          fi
+          find /backups -name 'moetsukita-*.sql.gz' -mtime +"$$KEEP_DAYS" -delete
+          sleep 86400
+        done
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  postgres:
+  storage:
+  caddy-data:
+  caddy-config:

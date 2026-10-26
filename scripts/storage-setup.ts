@@ -1,9 +1,8 @@
 /**
- * Prepares the buckets: creates them locally, allows browser uploads to the
- * private one from the site (CORS), expires watermarked copies after a day
- * and, on a local S3, makes the public bucket anonymously readable. On R2 the
- * public bucket is served through its custom domain instead, set up in the
- * Cloudflare dashboard.
+ * Prepares the buckets, and is safe to run on every start: creates them if
+ * missing, allows browser uploads to the private one from the site (CORS),
+ * expires watermarked copies after a day and makes the public bucket, which
+ * holds only blurred previews, anonymously readable.
  *
  *   npm run storage:setup
  */
@@ -21,21 +20,18 @@ loadEnvConfig(process.cwd());
 async function main() {
   const { storageClient } = await import("../src/server/storage");
   const { client, bucket, publicBucket } = storageClient();
-  const local = Boolean(process.env.R2_ENDPOINT?.trim());
 
   for (const name of [bucket, publicBucket]) {
     try {
       await client.send(new HeadBucketCommand({ Bucket: name }));
       console.log(`✓ bucket ${name} exists`);
     } catch {
-      if (!local)
-        throw new Error(`Bucket ${name} not found. Create it in the Cloudflare dashboard.`);
       await client.send(new CreateBucketCommand({ Bucket: name }));
       console.log(`✓ bucket ${name} created`);
     }
   }
 
-  const origins = (process.env.STORAGE_CORS_ORIGINS ?? "http://localhost:3000")
+  const origins = (process.env.S3_CORS_ORIGINS ?? "http://localhost:3000")
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
@@ -85,7 +81,7 @@ async function main() {
     console.warn(`! lifecycle rules not applied: ${(error as Error).message}`);
   }
 
-  if (local) {
+  try {
     await client.send(
       new PutBucketPolicyCommand({
         Bucket: publicBucket,
@@ -102,7 +98,10 @@ async function main() {
         }),
       }),
     );
-    console.log(`✓ ${publicBucket} readable anonymously (local only)`);
+    console.log(`✓ ${publicBucket} readable anonymously`);
+  } catch (error) {
+    // Cloudflare R2 has no bucket policies: there a custom domain makes it public.
+    console.warn(`! ${publicBucket} policy not applied: ${(error as Error).message}`);
   }
 }
 

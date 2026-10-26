@@ -1,0 +1,40 @@
+{
+	email {$ACME_EMAIL}
+}
+
+# The site.
+{$SITE_DOMAIN} {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+	reverse_proxy app:3000
+}
+
+www.{$SITE_DOMAIN} {
+	redir https://{$SITE_DOMAIN}{uri} permanent
+}
+
+# File storage. Browsers come here only with signed URLs the site hands out
+# (uploads, downloads, previews) or for blurred previews in the public bucket.
+# Everything else on the S3 API (bucket listing, admin endpoints) is closed.
+{$FILES_DOMAIN} {
+	@buckets path /{$S3_BUCKET}/* /{$S3_PUBLIC_BUCKET}/*
+	handle @buckets {
+		header {
+			X-Content-Type-Options "nosniff"
+			X-Robots-Tag "noindex, nofollow"
+			Referrer-Policy "no-referrer"
+			-Server
+		}
+		# The Host header passes through unchanged: signatures are checked against it.
+		reverse_proxy storage:9000
+	}
+	handle {
+		respond 404
+	}
+}

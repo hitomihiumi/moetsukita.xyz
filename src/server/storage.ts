@@ -40,36 +40,46 @@ export const urlTtl = {
 export const multipartPartSize = 64 * 1024 * 1024;
 
 let client: S3Client | undefined;
+let signer: S3Client | undefined;
 
+function createClient(endpoint: string) {
+  const env = storageEnv();
+  return new S3Client({
+    region: env.S3_REGION,
+    endpoint,
+    forcePathStyle: env.S3_FORCE_PATH_STYLE,
+    credentials: {
+      accessKeyId: env.S3_ACCESS_KEY_ID,
+      secretAccessKey: env.S3_SECRET_ACCESS_KEY,
+    },
+    // Newer SDKs add CRC32 checksums to presigned uploads, which browsers
+    // cannot compute and some S3 servers reject; only send them when required.
+    requestChecksumCalculation: "WHEN_REQUIRED",
+    responseChecksumValidation: "WHEN_REQUIRED",
+  });
+}
+
+/** For requests the server makes itself, over the internal address. */
 function s3() {
-  if (!client) {
-    const env = storageEnv();
-    const endpoint =
-      env.R2_ENDPOINT ??
-      (env.R2_ACCOUNT_ID ? `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com` : undefined);
-    if (!endpoint) throw new Error("Set R2_ACCOUNT_ID (Cloudflare R2) or R2_ENDPOINT (local S3).");
-
-    client = new S3Client({
-      region: "auto",
-      endpoint,
-      forcePathStyle: env.R2_FORCE_PATH_STYLE,
-      credentials: {
-        accessKeyId: env.R2_ACCESS_KEY_ID,
-        secretAccessKey: env.R2_SECRET_ACCESS_KEY,
-      },
-      // R2 rejects the CRC32 checksums newer SDKs add to presigned uploads by default.
-      requestChecksumCalculation: "WHEN_REQUIRED",
-      responseChecksumValidation: "WHEN_REQUIRED",
-    });
-  }
+  client ??= createClient(storageEnv().S3_ENDPOINT);
   return client;
+}
+
+/**
+ * For signing URLs that browsers open. A signature covers the host, so these
+ * must be signed for the public address, not the internal one.
+ */
+function s3Signer() {
+  const env = storageEnv();
+  signer ??= env.S3_PUBLIC_ENDPOINT ? createClient(env.S3_PUBLIC_ENDPOINT) : s3();
+  return signer;
 }
 
 /** Which bucket an operation targets; private unless stated otherwise. */
 export type BucketScope = "private" | "public";
 
 const bucket = (scope: BucketScope = "private") =>
-  scope === "public" ? storageEnv().R2_PUBLIC_BUCKET : storageEnv().R2_BUCKET;
+  scope === "public" ? storageEnv().S3_PUBLIC_BUCKET : storageEnv().S3_BUCKET;
 
 /** Keeps a readable name for the key and Content-Disposition, without path tricks. */
 export function safeFilename(filename: string) {
@@ -104,7 +114,7 @@ export async function presignUpload(params: {
     // Signed, so the browser cannot upload a different size than it declared.
     ContentLength: params.contentLength,
   });
-  return getSignedUrl(s3(), command, { expiresIn: urlTtl.upload });
+  return getSignedUrl(s3Signer(), command, { expiresIn: urlTtl.upload });
 }
 
 export async function createMultipartUpload(params: { key: string; contentType: string }) {
@@ -130,7 +140,7 @@ export async function presignUploadPart(params: {
     UploadId: params.uploadId,
     PartNumber: params.partNumber,
   });
-  return getSignedUrl(s3(), command, { expiresIn: urlTtl.upload });
+  return getSignedUrl(s3Signer(), command, { expiresIn: urlTtl.upload });
 }
 
 export async function completeMultipartUpload(params: {
@@ -178,12 +188,16 @@ export async function presignDownload(params: {
       ? contentDisposition(params.filename, params.disposition ?? "attachment")
       : undefined,
   });
-  return getSignedUrl(s3(), command, { expiresIn: params.expiresIn ?? urlTtl.download });
+  return getSignedUrl(s3Signer(), command, { expiresIn: params.expiresIn ?? urlTtl.download });
 }
 
 /** URL of an object in the public bucket, served by its domain without a signature. */
 export function publicUrl(key: string) {
-  return `${storageEnv().R2_PUBLIC_BASE_URL.replace(/\/$/, "")}/${key}`;
+  const env = storageEnv();
+  const base =
+    env.S3_PUBLIC_BASE_URL ??
+    `${(env.S3_PUBLIC_ENDPOINT ?? env.S3_ENDPOINT).replace(/\/$/, "")}/${env.S3_PUBLIC_BUCKET}`;
+  return `${base.replace(/\/$/, "")}/${key}`;
 }
 
 export async function headObject(key: string, scope?: BucketScope) {

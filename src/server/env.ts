@@ -19,7 +19,7 @@ function lazy<T extends z.ZodRawShape>(name: string, shape: T) {
   };
 }
 
-/** An optional variable left empty in .env (`R2_ACCOUNT_ID=`) counts as unset. */
+/** An optional variable left empty in .env (`S3_PUBLIC_ENDPOINT=`) counts as unset. */
 const optional = <T extends z.ZodType>(schema: T) =>
   z.preprocess((value) => (value === "" ? undefined : value), schema.optional());
 
@@ -28,20 +28,23 @@ export const dbEnv = lazy("database", {
 });
 
 export const storageEnv = lazy("storage", {
-  // Cloudflare R2 in production. R2_ENDPOINT overrides the R2 endpoint, e.g. a
-  // local MinIO (http://localhost:9000), which also needs path-style URLs.
-  R2_ACCOUNT_ID: optional(z.string()),
-  R2_ENDPOINT: optional(z.url()),
-  R2_FORCE_PATH_STYLE: z.stringbool().default(false),
-  R2_ACCESS_KEY_ID: z.string().min(1),
-  R2_SECRET_ACCESS_KEY: z.string().min(1),
-  /** Private bucket: originals, previews, watermarked copies. */
-  R2_BUCKET: z.string().min(1),
+  // Any S3-compatible storage: RustFS on our own server by default.
+  /** Where the app itself reaches storage, e.g. http://storage:9000 inside compose. */
+  S3_ENDPOINT: z.url(),
   /**
-   * Separate public bucket for blurred previews. A custom domain on R2 exposes
-   * a whole bucket, so nothing private may live in this one.
+   * Where browsers reach it, e.g. https://files.moetsukita.xyz. Signed URLs
+   * are signed for this host. Defaults to S3_ENDPOINT.
    */
-  R2_PUBLIC_BUCKET: z.string().min(1),
-  /** The public bucket's custom domain (or the local S3 URL of that bucket). */
-  R2_PUBLIC_BASE_URL: z.url(),
+  S3_PUBLIC_ENDPOINT: optional(z.url()),
+  S3_REGION: z.string().min(1).default("us-east-1"),
+  /** RustFS and MinIO need path-style URLs (host/bucket/key). */
+  S3_FORCE_PATH_STYLE: z.stringbool().default(true),
+  S3_ACCESS_KEY_ID: z.string().min(1),
+  S3_SECRET_ACCESS_KEY: z.string().min(1),
+  /** Private bucket: originals, previews, watermarked copies. */
+  S3_BUCKET: z.string().min(1),
+  /** Anonymously readable bucket that holds nothing but blurred previews. */
+  S3_PUBLIC_BUCKET: z.string().min(1),
+  /** Base URL of the public bucket. Defaults to S3_PUBLIC_ENDPOINT/S3_PUBLIC_BUCKET. */
+  S3_PUBLIC_BASE_URL: optional(z.url()),
 });
