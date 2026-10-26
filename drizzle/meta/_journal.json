@@ -15,6 +15,13 @@
       "when": 1793019676368,
       "tag": "0001_init",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793030014889,
+      "tag": "0002_access_synced_at",
+      "breakpoints": true
     }
   ]
 }

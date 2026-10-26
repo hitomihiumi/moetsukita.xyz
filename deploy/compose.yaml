@@ -1,5 +1,6 @@
 # Production stack for one server: Caddy (HTTPS) → Next.js app, Postgres,
-# RustFS (S3-compatible file storage) and daily database backups.
+# RustFS (S3-compatible file storage), scheduled tier sync and daily database
+# backups.
 #
 #   cd deploy && cp .env.example .env   # then fill in .env
 #   docker compose up -d --build
@@ -84,6 +85,17 @@ services:
     depends_on:
       storage:
         condition: service_healthy
+
+  # Re-checks every user's tier with Discord and Patreon on a schedule, so
+  # lapsed pledges and removed roles apply without the user coming back.
+  scheduler:
+    <<: *tools
+    restart: unless-stopped
+    env_file: .env
+    command: ["npm", "run", "access:sync", "--", "--every", "${ACCESS_SYNC_HOURS:-12}"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
 
   postgres:
     image: postgres:17-alpine

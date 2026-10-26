@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Footer, Providers } from "@/components";
+import { Footer, Header, Providers } from "@/components";
 import { routing } from "@/i18n/routing";
 import { fonts } from "@/resources/fonts";
 import { dataStyle, style } from "@/resources/once-ui.config";
@@ -86,6 +86,7 @@ export default async function LocaleLayout({ children, params }: Props) {
                 colorEnd: "accent-background-weak",
               }}
             />
+            <Header />
             <Column as="main" fill zIndex={1}>
               {children}
             </Column>

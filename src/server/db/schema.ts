@@ -58,6 +58,8 @@ export const users = pgTable("users", {
   ageConfirmedAt: timestamp("age_confirmed_at", { withTimezone: true }),
   bannedAt: timestamp("banned_at", { withTimezone: true }),
   banReason: text("ban_reason"),
+  /** Last time entitlements were checked against Discord and Patreon. */
+  accessSyncedAt: timestamp("access_synced_at", { withTimezone: true }),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 });

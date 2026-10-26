@@ -23,5 +23,61 @@
     "title": "ページが見つかりません",
     "description": "お探しのページは存在しないか、移動した可能性があります。",
     "back": "ホームに戻る"
+  },
+  "Header": {
+    "home": "ホーム",
+    "signIn": "ログイン",
+    "account": "アカウント",
+    "signOut": "ログアウト",
+    "menu": "アカウントメニュー",
+    "free": "無料アカウント"
+  },
+  "Login": {
+    "title": "ログイン",
+    "description": "支援者はプランに応じた作品を閲覧できます。",
+    "continueWith": "{provider}でログイン",
+    "fanboxTitle": "Fanboxで支援していますか?",
+    "fanboxHint": "Fanboxには外部サイト向けのログインがありません。Fanboxの設定でDiscordを連携し、Discordサーバーに参加してからDiscordでログインしてください。プランのロールが自動的に反映されます。",
+    "notConfigured": "ログインはまだ設定されていません。",
+    "errors": {
+      "AccessDenied": "ログインが拒否されました。誤りだと思われる場合は作者にご連絡ください。",
+      "OAuthAccountNotLinked": "このアカウントは既にサイト上の別のプロフィールに連携されています。",
+      "Configuration": "ログインは一時的に利用できません。後でもう一度お試しください。",
+      "default": "ログイン中に問題が発生しました。もう一度お試しください。"
+    }
+  },
+  "Account": {
+    "title": "アカウント",
+    "metaTitle": "アカウント",
+    "role": {
+      "user": "メンバー",
+      "editor": "編集者",
+      "admin": "管理者"
+    },
+    "access": "アクセス",
+    "accessDescription": "連携中のサービスのうち最も高いプランが適用されます。",
+    "currentTier": "現在のプラン",
+    "free": "無料",
+    "lastChecked": "{time}に確認",
+    "neverChecked": "未確認",
+    "refresh": "ステータスを更新",
+    "refreshed": "支援ステータスを更新しました",
+    "sources": {
+      "discord": "Discordロール(Fanbox)",
+      "patreon": "Patreonの支援",
+      "manual": "作者による付与"
+    },
+    "until": "{date}まで",
+    "noTier": "プランなし",
+    "connections": "連携アカウント",
+    "connectionsDescription": "両方のサービスを連携するとアクセスがまとめられます。",
+    "connected": "連携済み",
+    "notConnected": "未連携",
+    "connect": "連携する",
+    "disconnect": "連携解除",
+    "disconnectLast": "唯一のログイン方法は解除できません。",
+    "discordHint": "Fanbox支援者:Fanboxの設定でDiscordを連携し、サーバーに参加してください。プランのロールでアクセスが決まります。",
+    "patreonHint": "Patreon支援者:有効な支援で、あなたのティアに対応するプランが適用されます。",
+    "signOut": "ログアウト"
   }
 }

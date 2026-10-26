@@ -48,3 +48,45 @@ export const storageEnv = lazy("storage", {
   /** Base URL of the public bucket. Defaults to S3_PUBLIC_ENDPOINT/S3_PUBLIC_BUCKET. */
   S3_PUBLIC_BASE_URL: optional(z.url()),
 });
+
+/** Sign-in providers. Each is enabled only when its client id and secret are set. */
+export const authEnv = lazy("auth", {
+  AUTH_DISCORD_ID: optional(z.string()),
+  AUTH_DISCORD_SECRET: optional(z.string()),
+  AUTH_PATREON_ID: optional(z.string()),
+  AUTH_PATREON_SECRET: optional(z.string()),
+  /** Discord user ids that are always admins, comma-separated. */
+  OWNER_DISCORD_IDS: z
+    .string()
+    .default("")
+    .transform((value) =>
+      value
+        .split(",")
+        .map((id) => id.trim())
+        .filter(Boolean),
+    ),
+});
+
+/** Reading members' roles on our server, which is how Fanbox plans arrive. */
+export const discordEnv = lazy("discord", {
+  DISCORD_BOT_TOKEN: z.string().min(1),
+  DISCORD_GUILD_ID: z.string().min(1),
+});
+
+export const patreonEnv = lazy("patreon", {
+  PATREON_CAMPAIGN_ID: z.string().min(1),
+  /** Creator token: lists every member for the scheduled sync. Optional. */
+  PATREON_CREATOR_ACCESS_TOKEN: optional(z.string()),
+  /** Secret of the webhook set up in the Patreon portal. Optional. */
+  PATREON_WEBHOOK_SECRET: optional(z.string()),
+});
+
+/** Whether an optional integration has its variables, without throwing. */
+export function isConfigured(group: () => unknown) {
+  try {
+    group();
+    return true;
+  } catch {
+    return false;
+  }
+}
