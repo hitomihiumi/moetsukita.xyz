@@ -1,0 +1,27 @@
+{
+  "Meta": {
+    "title": "Moetsukita",
+    "description": "SFW/NSFWイラストレーター・クリエイター。作品、コミッションなどをご覧ください。"
+  },
+  "Home": {
+    "subtitle": "SFW/NSFW イラストレーター"
+  },
+  "Footer": {
+    "builtWith": "Built with",
+    "by": "制作:",
+    "source": "GitHubのソースコード"
+  },
+  "LocaleSwitcher": {
+    "label": "言語"
+  },
+  "ThemeSwitcher": {
+    "system": "システムテーマ",
+    "dark": "ダークテーマ",
+    "light": "ライトテーマ"
+  },
+  "NotFound": {
+    "title": "ページが見つかりません",
+    "description": "お探しのページは存在しないか、移動した可能性があります。",
+    "back": "ホームに戻る"
+  }
+}

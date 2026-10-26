@@ -1,0 +1,27 @@
+{
+  "Meta": {
+    "title": "Moetsukita",
+    "description": "SFW/NSFW artist, illustrator, and content creator. Explore my portfolio, commissions, and more."
+  },
+  "Home": {
+    "subtitle": "SFW/NSFW artist"
+  },
+  "Footer": {
+    "builtWith": "Built with",
+    "by": "By",
+    "source": "Source code on GitHub"
+  },
+  "LocaleSwitcher": {
+    "label": "Language"
+  },
+  "ThemeSwitcher": {
+    "system": "System theme",
+    "dark": "Dark theme",
+    "light": "Light theme"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or has been moved.",
+    "back": "Back to home"
+  }
+}
