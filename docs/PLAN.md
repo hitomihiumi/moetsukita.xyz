@@ -38,7 +38,8 @@
 ### 3.1. Уровни
 
 Таблица `tiers`: `id`, `rank` (0 = бесплатно/публично, 1, 2, 3…), `name` (i18n), `color`.
-Работа хранит `min_rank`. Пользователь видит работу, если `user.effective_rank >= work.min_rank`.
+Работа хранит `min_tier_id` (null — видна всем). Пользователь видит работу, если ранг его уровня не ниже ранга `min_tier`.
+Так смена рангов в админке не требует переписывать работы.
 
 Таблица `tier_mappings`: `source` (`patreon_tier` | `discord_role`), `external_id`, `tier_id`.
 Пример: Patreon-тир «Supporter» → уровень 1; Discord-роль, которую Fanbox выдаёт за план «500円» → уровень 1.
@@ -79,35 +80,39 @@
 ## 4. Модель данных (Drizzle)
 
 ```
-users            id, name, image, role, age_confirmed_at, banned_at, created_at
+users            id, name, email, image, role, age_confirmed_at, banned_at, ban_reason, created_at
 accounts         (Auth.js) provider, provider_account_id, tokens…
 sessions         (Auth.js)
-tiers            id, rank, name jsonb{en,ru,ja}, color
-tier_mappings    id, source, external_id, tier_id
-entitlements     user_id, source, tier_id, external_ref, synced_at
+tiers            id, rank (unique), name jsonb{en,ru,ja}, description jsonb, color
+tier_mappings    id, source (patreon_tier|discord_role), external_id, label, tier_id
+entitlements     user_id, source (patreon|discord|manual), tier_id, external_ref, expires_at, synced_at
 
 works            id, slug, title jsonb, description jsonb, rating (sfw|nsfw),
-                 min_rank, status (draft|published|scheduled), published_at,
-                 cover_asset_id, search_vector tsvector (generated), created_by, updated_at
-assets           id, work_id, kind (image|archive|source), position, r2_key, filename, mime,
-                 size, width, height, sha256, thumb_key, preview_key, blur_key, min_rank_override
+                 min_tier_id, status (draft|scheduled|published), published_at,
+                 cover_asset_id, created_by_id, updated_at,
+                 search_vector tsvector (generated), search_text (generated, pg_trgm)
+assets           id, work_id, kind (image|archive|source), status (pending|processing|ready|failed),
+                 position, storage_key, filename, mime, size, width, height, sha256,
+                 thumb_key, preview_key, blur_key, min_tier_id (строже, чем у работы)
 tags             id, slug, name jsonb, category (character|series|general|meta), aliases text[]
 work_tags        work_id, tag_id
 
-downloads        id, user_id, asset_id, watermark_id, ip_hash, user_agent, created_at
-watermarks       id (64-bit payload), user_id, asset_id, created_at   — для поиска источника слива
+downloads        id, user_id, asset_id, watermark (64-bit payload, unique), ip_hash, user_agent, created_at
 audit_log        id, actor_id, action, entity, entity_id, diff jsonb, created_at
 ```
 
 ## 5. Медиа и защита от сливов
 
-### 5.1. Хранение в R2 (бакет приватный)
+### 5.1. Хранение в R2
+
+Два бакета: приватный (всё, кроме размытых превью) и публичный со своим доменом. Свой домен в R2
+открывает бакет целиком, поэтому в публичном нет ничего, кроме `blur/`.
 
 ```
 originals/{workId}/{assetId}/{filename}   — оригинал, наружу никогда не отдаётся напрямую
 previews/{assetId}/thumb.webp             — ~600px, для сетки (для пользователей с доступом)
 previews/{assetId}/view.webp              — ~2000px, для просмотра на сайте
-public/blur/{assetId}.webp                — сильно размытое превью для «замка», публичное через CDN
+blur/{assetId}.webp                       — в ОТДЕЛЬНОМ публичном бакете: размытое превью для «замка»
 derived/{downloadId}/{filename}           — файл с водяным знаком; lifecycle-правило удаляет через 24 ч
 ```
 
@@ -123,7 +128,7 @@ Vercel ограничивает тело запроса/ответа функц�
 ### 5.3. Просмотр
 
 - Сетка и страница работы отдают `thumb`/`view` через presigned GET с TTL ~10 минут, генерируются на сервере
-  только для пользователей с доступом. Без доступа — только `public/blur`.
+  только для пользователей с доступом. Без доступа — только `blur` из публичного бакета.
 - Оригиналы в браузере не показываются.
 
 ### 5.4. Скачивание
@@ -131,7 +136,7 @@ Vercel ограничивает тело запроса/ответа функц�
 `POST /api/assets/{id}/download`:
 1. Проверка сессии, бана, `effective_rank` (с ленивой пересинхронизацией) и 18+ для NSFW.
 2. Лимит частоты скачиваний (защита от массовой выкачки).
-3. Создаётся запись `watermarks` (уникальный 64-битный payload) и запись `downloads`.
+3. Создаётся запись `downloads` с уникальным 64-битным payload водяного знака.
 4. **Изображения**: оригинал из R2 → sharp → встраивание невидимого знака → загрузка в `derived/` → presigned GET
    с TTL **60–120 секунд** и `Content-Disposition: attachment`.
 5. **Архивы/исходники**: presigned GET с коротким TTL + запись в лог (см. ограничения).
@@ -139,7 +144,7 @@ Vercel ограничивает тело запроса/ответа функц�
 
 ### 5.5. Невидимый водяной знак
 
-- Payload 64 бита (ID записи `watermarks`) + коды коррекции ошибок (Reed-Solomon/повторение).
+- Payload 64 бита (`downloads.watermark`) + коды коррекции ошибок (Reed-Solomon/повторение).
 - Встраивание в средние частоты DCT блоков 8×8 канала яркости методом QIM, с повторением по всему изображению.
   Переживает пересжатие JPEG, небольшое масштабирование и частичную обрезку.
 - Дополнительный слой: XMP/EXIF-метаданные (легко стираются, но ловят «ленивые» сливы).
@@ -241,10 +246,14 @@ PATREON_CREATOR_ACCESS_TOKEN= # для списка тиров в админке
 PATREON_WEBHOOK_SECRET=
 
 R2_ACCOUNT_ID=
+R2_ENDPOINT=                  # только локально (RustFS), иначе пусто
+R2_FORCE_PATH_STYLE=          # true локально
 R2_ACCESS_KEY_ID=
 R2_SECRET_ACCESS_KEY=
-R2_BUCKET=
-R2_PUBLIC_BASE_URL=           # CDN-домен только для public/blur
+R2_BUCKET=                    # приватный бакет
+R2_PUBLIC_BUCKET=             # отдельный публичный бакет только для размытых превью
+R2_PUBLIC_BASE_URL=           # домен публичного бакета
+STORAGE_CORS_ORIGINS=         # откуда разрешена загрузка из браузера
 
 WATERMARK_SECRET=             # ключ перемешивания позиций водяного знака
 CRON_SECRET=
