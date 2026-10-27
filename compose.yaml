@@ -1,0 +1,33 @@
+# Local Postgres and S3-compatible storage (RustFS) for `npm run dev`.
+# Credentials match .env.example.
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: moetsukita
+      POSTGRES_PASSWORD: moetsukita
+      POSTGRES_DB: moetsukita
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U moetsukita"]
+      interval: 2s
+      retries: 15
+
+  storage:
+    image: rustfs/rustfs:1.0.4
+    environment:
+      RUSTFS_ACCESS_KEY: moetsukita
+      RUSTFS_SECRET_KEY: moetsukita-secret
+      RUSTFS_CONSOLE_ENABLE: "true"
+    ports:
+      - "9000:9000" # S3 API
+      - "9001:9001" # web console
+    volumes:
+      - storage:/data
+
+volumes:
+  postgres:
+  storage:

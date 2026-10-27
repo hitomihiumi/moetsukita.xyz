@@ -1,18 +1,27 @@
-import { IconType } from "react-icons";
+import type { IconComponent } from "@once-ui-system/core";
+import {
+  FaDiscord,
+  FaGithub,
+  FaInstagram,
+  FaPatreon,
+  FaPixiv,
+  FaTelegram,
+  FaXTwitter,
+} from "react-icons/fa6";
 
-import { HiOutlineRocketLaunch } from "react-icons/hi2";
-
-import { FaXTwitter, FaPixiv, FaInstagram, FaPatreon, FaTelegram, FaGithub } from "react-icons/fa6";
-
-export const iconLibrary: Record<string, IconType> = {
-  rocket: HiOutlineRocketLaunch,
+// Brand marks are not part of Once UI's built-in set, so they are registered here.
+export const iconLibrary = {
   twitter: FaXTwitter,
   pixiv: FaPixiv,
   instagram: FaInstagram,
   patreon: FaPatreon,
   telegram: FaTelegram,
   github: FaGithub,
-};
+  discord: FaDiscord,
+} satisfies Record<string, IconComponent>;
 
-export type IconLibrary = typeof iconLibrary;
-export type IconName = keyof IconLibrary;
+type CustomIcons = { [K in keyof typeof iconLibrary]: true };
+
+declare module "@once-ui-system/core" {
+  interface IconLibraryOverrides extends CustomIcons {}
+}

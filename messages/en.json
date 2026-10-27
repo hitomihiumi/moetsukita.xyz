@@ -1,0 +1,144 @@
+{
+  "Meta": {
+    "title": "Moetsukita",
+    "description": "SFW/NSFW artist, illustrator, and content creator. Explore my portfolio, commissions, and more."
+  },
+  "Home": {
+    "subtitle": "SFW/NSFW artist"
+  },
+  "Footer": {
+    "builtWith": "Built with",
+    "by": "By",
+    "source": "Source code on GitHub"
+  },
+  "LocaleSwitcher": {
+    "label": "Language"
+  },
+  "ThemeSwitcher": {
+    "system": "System theme",
+    "dark": "Dark theme",
+    "light": "Light theme"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or has been moved.",
+    "back": "Back to home"
+  },
+  "Header": {
+    "home": "Home",
+    "signIn": "Sign in",
+    "account": "Account",
+    "signOut": "Sign out",
+    "menu": "Account menu",
+    "free": "Free account",
+    "admin": "Admin panel",
+    "gallery": "Gallery"
+  },
+  "Login": {
+    "title": "Sign in",
+    "description": "Supporters get access to works that match their subscription tier.",
+    "continueWith": "Continue with {provider}",
+    "fanboxTitle": "Supporting on Fanbox?",
+    "fanboxHint": "Fanbox has no sign-in for other sites. Connect Discord in your Fanbox settings, join the Discord server and sign in with Discord: your plan's role is picked up automatically.",
+    "notConfigured": "Sign-in is not set up yet.",
+    "errors": {
+      "AccessDenied": "Sign-in was refused. If you think this is a mistake, contact the artist.",
+      "OAuthAccountNotLinked": "This account is already linked to another profile on the site.",
+      "Configuration": "Sign-in is temporarily unavailable. Please try again later.",
+      "default": "Something went wrong while signing in. Please try again."
+    }
+  },
+  "Account": {
+    "title": "Account",
+    "metaTitle": "Account",
+    "role": {
+      "user": "Member",
+      "editor": "Editor",
+      "admin": "Admin"
+    },
+    "access": "Access",
+    "accessDescription": "Your tier is the highest one among all connected services.",
+    "currentTier": "Current tier",
+    "free": "Free",
+    "lastChecked": "Last checked {time}",
+    "neverChecked": "Not checked yet",
+    "refresh": "Refresh status",
+    "refreshed": "Subscription status updated",
+    "sources": {
+      "discord": "Discord roles (Fanbox)",
+      "patreon": "Patreon pledge",
+      "manual": "Granted by the artist"
+    },
+    "until": "until {date}",
+    "noTier": "No tier",
+    "connections": "Connected accounts",
+    "connectionsDescription": "Connect both services to combine your access.",
+    "connected": "Connected",
+    "notConnected": "Not connected",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "disconnectLast": "You cannot disconnect your only sign-in method.",
+    "discordHint": "Fanbox supporters: connect Discord in Fanbox settings and join the server. Your plan's role grants the tier.",
+    "patreonHint": "Patrons: an active pledge grants the tier of your Patreon tier.",
+    "signOut": "Sign out"
+  },
+  "Gallery": {
+    "title": "Gallery",
+    "metaTitle": "Gallery",
+    "description": "Works by Moetsukita. Supporters on Fanbox and Patreon open them by tier.",
+    "searchPlaceholder": "Search titles and tags",
+    "search": "Search",
+    "tags": "Tags",
+    "noTags": "No tags",
+    "rating": {
+      "all": "All",
+      "sfw": "SFW",
+      "nsfw": "NSFW"
+    },
+    "mine": "Only what I can open",
+    "sort": {
+      "new": "Newest",
+      "old": "Oldest"
+    },
+    "results": "{count, plural, =0 {No works} one {# work} other {# works}}",
+    "empty": "Nothing matches these filters.",
+    "reset": "Clear filters",
+    "images": "{count, plural, one {# image} other {# images}}",
+    "locked": "{tier} and above",
+    "nsfwHidden": "NSFW works are hidden.",
+    "confirmAge": "I am 18 or older",
+    "ageTitle": "This work is for adults",
+    "ageDescription": "It contains NSFW art. Confirm that you are 18 or older to continue.",
+    "back": "Back to gallery",
+    "lockedTitle": "For the {tier} tier and above",
+    "lockedDescription": "Support on Fanbox or Patreon at this tier, then sign in to open the full work.",
+    "signIn": "Sign in",
+    "checkAccess": "Check my access",
+    "supportFanbox": "Support on Fanbox",
+    "supportPatreon": "Support on Patreon",
+    "files": "Files",
+    "fileLocked": "Needs {tier}",
+    "publishedOn": "Published {date}",
+    "open": "Open gallery"
+  },
+  "Downloads": {
+    "download": "Download",
+    "downloadOriginal": "Download original",
+    "signInToDownload": "Sign in to download",
+    "notice": "Each download is personal: the file carries an invisible mark that identifies your account.",
+    "started": "Download started",
+    "errors": {
+      "unauthorized": "Sign in to download.",
+      "forbidden": "Your tier does not include this file.",
+      "age": "Confirm that you are 18 or older first.",
+      "not_found": "This file is no longer available.",
+      "rate_limited": "Too many downloads. Try again later.",
+      "failed": "The download failed. Try again."
+    }
+  },
+  "Error": {
+    "title": "Something went wrong",
+    "description": "The page could not be loaded. Please try again.",
+    "retry": "Try again"
+  }
+}

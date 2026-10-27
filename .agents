@@ -1,5 +1,13 @@
 # Once UI Development Rules
 
+## Once UI 2.x harness (read first)
+- The project uses `@once-ui-system/core` 2.x. Its agent harness lives in `node_modules/@once-ui-system/core/AGENTS.md`: pick the bundle in `ai/bundles/` closest to the page (`app-shell`, `list-page`, `settings`, `dashboard`, `auth`, `page`) and read it before writing code. Never write 1.x prop names from memory (`isOpen`, `isChecked`, `Tag variant`, field `height`).
+- Run `npm run validate:ui` (the package's `once-ui-validate-ai-code`) plus `npm run typecheck` and `npm run lint` before committing.
+- `LayoutProvider` comes from `@once-ui-system/core/next`; `MediaUpload` from `/media`; charts from `/data`.
+- Brand icons are registered in `src/resources/icons.ts` (augmenting `IconLibraryOverrides`); every other icon name must be a built-in one. Never cast with `as IconName`.
+- Prefer `<Row>`/`<Column>`; `<Flex>` only when direction changes at a breakpoint. Bare `border` uses the default border colour. `RevealFx delay` is in milliseconds.
+- All user-facing text goes through next-intl (`messages/{en,ru,ja}.json`); links inside the app use `@/i18n/navigation`.
+
 ## Core Philosophy
 - You are a Design Engineer. We use Once UI for its semantic layout engine and design tokens.
 - Priority 1: Semantic clarity. Use high-level atoms to build layouts and set styles (<Column>, <Row>, <Grid>, <Heading>, <Text>).

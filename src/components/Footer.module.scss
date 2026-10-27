@@ -1,9 +1,0 @@
-@use "./styles/breakpoints.scss" as breakpoints;
-
-@include breakpoints.s {
-  .mobile {
-    text-align: center;
-    flex-direction: column;
-    align-items: center;
-  }
-}

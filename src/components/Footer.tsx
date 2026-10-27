@@ -1,46 +1,40 @@
-import { Fade, Flex, IconButton, SmartLink, Text } from "@once-ui-system/core";
-import styles from "./Footer.module.scss";
+import { Flex, IconButton, Row, SmartLink, Text } from "@once-ui-system/core";
+import { getTranslations } from "next-intl/server";
+import { LocaleSwitcher } from "./LocaleSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 
-export const Footer = () => {
+export async function Footer() {
+  const t = await getTranslations("Footer");
   const currentYear = new Date().getFullYear();
 
   return (
-    <>
+    <Row as="footer" fillWidth padding="8" horizontal="center">
       <Flex
-        as="footer"
-        fillWidth
-        padding="8"
-        horizontal="center"
-        s={{ direction: "column" }}
-        zIndex={8}
+        maxWidth="m"
+        paddingY="8"
+        paddingX="16"
+        gap="16"
+        horizontal="between"
+        vertical="center"
+        s={{ direction: "column", align: "center" }}
       >
-        <Flex
-          className={styles.mobile}
-          maxWidth="m"
-          paddingY="8"
-          paddingX="16"
-          gap="16"
-          horizontal="between"
-          vertical="center"
-        >
-          <Text variant="body-default-s" onBackground="neutral-strong">
-            <Text onBackground="neutral-weak">© {currentYear} /</Text>
-            <Text onBackground="neutral-weak">
-              {" "}
-              Built with <SmartLink href="https://once-ui.com">Once UI</SmartLink> / By{" "}
-              <SmartLink href="https://hitomihiumi.xyz">hitomihiumi</SmartLink> 💜
-            </Text>
-          </Text>
-          <Flex gap="16">
-            <IconButton
-              icon="github"
-              variant="ghost"
-              target="_blank"
-              href="https://github.com/hitomihiumi/moetsukita.xyz"
-            />
-          </Flex>
-        </Flex>
+        <Text variant="body-default-s" onBackground="neutral-weak">
+          © {currentYear} / {t("builtWith")}{" "}
+          <SmartLink href="https://once-ui.com">Once UI</SmartLink> / {t("by")}{" "}
+          <SmartLink href="https://hitomihiumi.xyz">hitomihiumi</SmartLink> 💜
+        </Text>
+        <Row gap="8" vertical="center">
+          <LocaleSwitcher />
+          <ThemeToggle />
+          <IconButton
+            icon="github"
+            variant="ghost"
+            size="s"
+            tooltip={t("source")}
+            href="https://github.com/hitomihiumi/moetsukita.xyz"
+          />
+        </Row>
       </Flex>
-    </>
+    </Row>
   );
-};
+}

@@ -1,0 +1,144 @@
+{
+  "Meta": {
+    "title": "Moetsukita",
+    "description": "SFW/NSFWイラストレーター・クリエイター。作品、コミッションなどをご覧ください。"
+  },
+  "Home": {
+    "subtitle": "SFW/NSFW イラストレーター"
+  },
+  "Footer": {
+    "builtWith": "Built with",
+    "by": "制作:",
+    "source": "GitHubのソースコード"
+  },
+  "LocaleSwitcher": {
+    "label": "言語"
+  },
+  "ThemeSwitcher": {
+    "system": "システムテーマ",
+    "dark": "ダークテーマ",
+    "light": "ライトテーマ"
+  },
+  "NotFound": {
+    "title": "ページが見つかりません",
+    "description": "お探しのページは存在しないか、移動した可能性があります。",
+    "back": "ホームに戻る"
+  },
+  "Header": {
+    "home": "ホーム",
+    "signIn": "ログイン",
+    "account": "アカウント",
+    "signOut": "ログアウト",
+    "menu": "アカウントメニュー",
+    "free": "無料アカウント",
+    "admin": "管理画面",
+    "gallery": "ギャラリー"
+  },
+  "Login": {
+    "title": "ログイン",
+    "description": "支援者はプランに応じた作品を閲覧できます。",
+    "continueWith": "{provider}でログイン",
+    "fanboxTitle": "Fanboxで支援していますか?",
+    "fanboxHint": "Fanboxには外部サイト向けのログインがありません。Fanboxの設定でDiscordを連携し、Discordサーバーに参加してからDiscordでログインしてください。プランのロールが自動的に反映されます。",
+    "notConfigured": "ログインはまだ設定されていません。",
+    "errors": {
+      "AccessDenied": "ログインが拒否されました。誤りだと思われる場合は作者にご連絡ください。",
+      "OAuthAccountNotLinked": "このアカウントは既にサイト上の別のプロフィールに連携されています。",
+      "Configuration": "ログインは一時的に利用できません。後でもう一度お試しください。",
+      "default": "ログイン中に問題が発生しました。もう一度お試しください。"
+    }
+  },
+  "Account": {
+    "title": "アカウント",
+    "metaTitle": "アカウント",
+    "role": {
+      "user": "メンバー",
+      "editor": "編集者",
+      "admin": "管理者"
+    },
+    "access": "アクセス",
+    "accessDescription": "連携中のサービスのうち最も高いプランが適用されます。",
+    "currentTier": "現在のプラン",
+    "free": "無料",
+    "lastChecked": "{time}に確認",
+    "neverChecked": "未確認",
+    "refresh": "ステータスを更新",
+    "refreshed": "支援ステータスを更新しました",
+    "sources": {
+      "discord": "Discordロール(Fanbox)",
+      "patreon": "Patreonの支援",
+      "manual": "作者による付与"
+    },
+    "until": "{date}まで",
+    "noTier": "プランなし",
+    "connections": "連携アカウント",
+    "connectionsDescription": "両方のサービスを連携するとアクセスがまとめられます。",
+    "connected": "連携済み",
+    "notConnected": "未連携",
+    "connect": "連携する",
+    "disconnect": "連携解除",
+    "disconnectLast": "唯一のログイン方法は解除できません。",
+    "discordHint": "Fanbox支援者:Fanboxの設定でDiscordを連携し、サーバーに参加してください。プランのロールでアクセスが決まります。",
+    "patreonHint": "Patreon支援者:有効な支援で、あなたのティアに対応するプランが適用されます。",
+    "signOut": "ログアウト"
+  },
+  "Gallery": {
+    "title": "ギャラリー",
+    "metaTitle": "ギャラリー",
+    "description": "Moetsukitaの作品。FanboxとPatreonの支援者はプランに応じて閲覧できます。",
+    "searchPlaceholder": "タイトルやタグで検索",
+    "search": "検索",
+    "tags": "タグ",
+    "noTags": "タグなし",
+    "rating": {
+      "all": "すべて",
+      "sfw": "全年齢",
+      "nsfw": "R-18"
+    },
+    "mine": "閲覧可能な作品のみ",
+    "sort": {
+      "new": "新しい順",
+      "old": "古い順"
+    },
+    "results": "{count, plural, =0 {作品なし} other {#件}}",
+    "empty": "条件に一致する作品はありません。",
+    "reset": "条件をクリア",
+    "images": "{count}枚",
+    "locked": "{tier}以上",
+    "nsfwHidden": "R-18作品は非表示です。",
+    "confirmAge": "18歳以上です",
+    "ageTitle": "成人向けの作品です",
+    "ageDescription": "R-18コンテンツを含みます。18歳以上であることを確認してください。",
+    "back": "ギャラリーに戻る",
+    "lockedTitle": "{tier}プランの支援者向け",
+    "lockedDescription": "このプランでFanboxまたはPatreonから支援し、ログインすると全体を閲覧できます。",
+    "signIn": "ログイン",
+    "checkAccess": "アクセスを確認",
+    "supportFanbox": "Fanboxで支援",
+    "supportPatreon": "Patreonで支援",
+    "files": "ファイル",
+    "fileLocked": "{tier}が必要",
+    "publishedOn": "{date}公開",
+    "open": "ギャラリーを見る"
+  },
+  "Downloads": {
+    "download": "ダウンロード",
+    "downloadOriginal": "原寸をダウンロード",
+    "signInToDownload": "ログインしてダウンロード",
+    "notice": "ダウンロードは個人用です。ファイルにはアカウントを特定する不可視のマークが含まれます。",
+    "started": "ダウンロードを開始しました",
+    "errors": {
+      "unauthorized": "ログインしてください。",
+      "forbidden": "このファイルはあなたのプランに含まれていません。",
+      "age": "先に18歳以上であることを確認してください。",
+      "not_found": "このファイルは利用できません。",
+      "rate_limited": "ダウンロードが多すぎます。しばらくしてからお試しください。",
+      "failed": "ダウンロードに失敗しました。もう一度お試しください。"
+    }
+  },
+  "Error": {
+    "title": "エラーが発生しました",
+    "description": "ページを読み込めませんでした。もう一度お試しください。",
+    "retry": "再試行"
+  }
+}
