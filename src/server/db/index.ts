@@ -1,4 +1,5 @@
 import "server-only";
+import { attachDatabasePool } from "@vercel/functions";
 import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { dbEnv } from "../env";
@@ -13,7 +14,10 @@ export type Database = NodePgDatabase<typeof schema>;
 const globalForDb = globalThis as unknown as { pool?: Pool };
 
 function createPool() {
-  return new Pool({ connectionString: dbEnv().DATABASE_URL, max: 10 });
+  const pool = new Pool({ connectionString: dbEnv().DATABASE_URL, max: 10 });
+  // On Vercel Fluid compute, closes idle connections before the instance suspends.
+  attachDatabasePool(pool);
+  return pool;
 }
 
 let instance: Database | undefined;

@@ -28,16 +28,11 @@ export const dbEnv = lazy("database", {
 });
 
 export const storageEnv = lazy("storage", {
-  // Any S3-compatible storage: RustFS on our own server by default.
-  /** Where the app itself reaches storage, e.g. http://storage:9000 inside compose. */
+  // Any S3-compatible storage: Cloudflare R2 in production, RustFS locally.
   S3_ENDPOINT: z.url(),
-  /**
-   * Where browsers reach it, e.g. https://files.moetsukita.xyz. Signed URLs
-   * are signed for this host. Defaults to S3_ENDPOINT.
-   */
+  /** Host browsers use, if different from S3_ENDPOINT; signed URLs are signed for it. */
   S3_PUBLIC_ENDPOINT: optional(z.url()),
-  S3_REGION: z.string().min(1).default("us-east-1"),
-  /** RustFS and MinIO need path-style URLs (host/bucket/key). */
+  S3_REGION: z.string().min(1).default("auto"),
   S3_FORCE_PATH_STYLE: z.stringbool().default(true),
   S3_ACCESS_KEY_ID: z.string().min(1),
   S3_SECRET_ACCESS_KEY: z.string().min(1),

@@ -1,11 +1,4 @@
-/**
- * Prepares the buckets, and is safe to run on every start: creates them if
- * missing, allows browser uploads to the private one from the site (CORS),
- * expires watermarked copies after a day and makes the public bucket, which
- * holds only blurred previews, anonymously readable.
- *
- *   npm run storage:setup
- */
+/** Creates the buckets and sets CORS, lifecycle and the public-bucket policy. Idempotent. */
 import {
   CreateBucketCommand,
   HeadBucketCommand,

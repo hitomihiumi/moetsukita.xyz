@@ -1,9 +1,4 @@
-/**
- * Applies the SQL migrations in drizzle/. In the production compose stack the
- * `migrate` service runs it before the app starts.
- *
- *   npm run db:migrate
- */
+/** Applies drizzle/ migrations. Runs before `next build` on Vercel (`vercel-build`). */
 import { loadEnvConfig } from "@next/env";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";

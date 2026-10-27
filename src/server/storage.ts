@@ -59,7 +59,7 @@ function createClient(endpoint: string) {
   });
 }
 
-/** For requests the server makes itself, over the internal address. */
+/** For requests the server makes itself. */
 function s3() {
   client ??= createClient(storageEnv().S3_ENDPOINT);
   return client;

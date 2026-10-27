@@ -3,6 +3,7 @@ import "@once-ui-system/core/css/tokens.css";
 import "@/resources/custom.css";
 
 import { Background, Column, Meta, Row, ThemeInit } from "@once-ui-system/core";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
@@ -92,6 +93,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             </Column>
             <Footer />
           </NextIntlClientProvider>
+          <Analytics />
         </Column>
       </Providers>
     </Row>
