@@ -13,7 +13,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { Locale } from "next-intl";
 import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
-import { AgeConfirmButton, BlurredImage } from "@/components/gallery";
+import { AgeConfirmButton, BlurredImage, DownloadButton } from "@/components/gallery";
 import { formatBytes } from "@/lib/files";
 import { pickLocalized } from "@/lib/localized";
 import { localizedPath } from "@/resources/seo";
@@ -39,14 +39,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function WorkPage({ params }: Props) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
-  const [{ viewer, audience }, t, format] = await Promise.all([
+  const [{ viewer, audience }, t, d, format] = await Promise.all([
     getAudience(),
     getTranslations("Gallery"),
+    getTranslations("Downloads"),
     getFormatter(),
   ]);
   const result = await getPublicWork(slug, audience);
   if (!result) notFound();
   const galleryPath = localizedPath(locale, "/gallery");
+  const loginPath = `${localizedPath(locale, "/login")}?callbackUrl=${encodeURIComponent(localizedPath(locale, `/gallery/${slug}`))}`;
+  // Downloads need an account: every copy is watermarked for one.
+  const download = (assetId: string, label: string) =>
+    viewer ? (
+      <DownloadButton assetId={assetId} label={label} />
+    ) : (
+      <Button href={loginPath} size="s" variant="secondary" prefixIcon="person">
+        {d("signInToDownload")}
+      </Button>
+    );
 
   const back = (
     <Row>
@@ -95,6 +106,8 @@ export default async function WorkPage({ params }: Props) {
   const shown = await Promise.all(
     (locked ? images.slice(0, 1) : images).map(async (file) => ({
       id: file.id,
+      filename: file.filename,
+      size: file.size,
       locked: file.locked,
       width: file.width,
       height: file.height,
@@ -201,16 +214,24 @@ export default async function WorkPage({ params }: Props) {
               </Column>
             ) : (
               image.url && (
-                <Media
-                  key={image.id}
-                  src={image.url}
-                  alt={title}
-                  unoptimized
-                  enlarge
-                  radius="l"
-                  aspectRatio={aspectRatio}
-                  objectFit="contain"
-                />
+                <Column key={image.id} gap="8">
+                  <Media
+                    src={image.url}
+                    alt={title}
+                    unoptimized
+                    enlarge
+                    radius="l"
+                    aspectRatio={aspectRatio}
+                    objectFit="contain"
+                  />
+                  <Row horizontal="between" vertical="center" gap="12">
+                    <Text variant="body-default-xs" onBackground="neutral-weak" truncate>
+                      {image.filename} · {formatBytes(image.size)}
+                      {image.width && image.height ? ` · ${image.width}×${image.height}` : ""}
+                    </Text>
+                    {download(image.id, d("downloadOriginal"))}
+                  </Row>
+                </Column>
               )
             );
           })}
@@ -246,17 +267,22 @@ export default async function WorkPage({ params }: Props) {
                     </Text>
                   </Column>
                 </Row>
-                {file.locked && file.tier && (
+                {file.locked && file.tier ? (
                   <Tag size="s" scheme="warning" prefixIcon="lock">
                     {t("fileLocked", { tier: pickLocalized(file.tier.name, locale) })}
                   </Tag>
+                ) : (
+                  download(file.id, d("download"))
                 )}
               </Row>
             ))}
-            <Text variant="body-default-xs" onBackground="neutral-weak">
-              {t("downloadsSoon")}
-            </Text>
           </Column>
+        )}
+
+        {!locked && files.length > 0 && (
+          <Text variant="body-default-xs" onBackground="neutral-weak">
+            {d("notice")}
+          </Text>
         )}
       </Column>
     </Column>

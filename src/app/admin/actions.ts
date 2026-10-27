@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import * as assetService from "@/server/admin/assets";
+import * as downloadService from "@/server/admin/downloads";
 import { ServiceError } from "@/server/admin/errors";
 import type {
   MappingInput,
@@ -137,4 +138,18 @@ export async function updateUserAction(id: string, input: UserUpdateInput) {
 
 export async function syncUserAction(id: string) {
   return run("admin", (actor) => userService.syncUserNow(actor, id));
+}
+
+// ─── Leaks (admin) ──────────────────────────────────────────────────────────
+
+export async function startLeakCheckAction(params: {
+  filename: string;
+  mime: string;
+  size: number;
+}) {
+  return run("admin", () => downloadService.startLeakCheck(params));
+}
+
+export async function detectLeakAction(key: string) {
+  return run("admin", (actor) => downloadService.detectLeak(actor, key));
 }

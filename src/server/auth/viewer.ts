@@ -5,7 +5,8 @@ import { syncUserIfStale } from "../access/sync";
 import { entitlementsOf, type Tier } from "../access/tiers";
 import { getDb } from "../db";
 import { accounts, users } from "../db/schema";
-import { auth, type Role } from ".";
+import { auth } from ".";
+import { hasRole, type Role } from "./roles";
 
 export type Viewer = {
   id: string;
@@ -24,11 +25,7 @@ export type Viewer = {
   providers: string[];
 };
 
-const roleLevel: Record<Role, number> = { user: 0, editor: 1, admin: 2 };
-
-export function hasRole(viewer: Pick<Viewer, "role"> | null, role: Role) {
-  return viewer !== null && roleLevel[viewer.role] >= roleLevel[role];
-}
+export { hasRole } from "./roles";
 
 /**
  * The signed-in user with their current tier, once per request. Re-checks the

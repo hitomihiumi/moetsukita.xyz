@@ -118,8 +118,22 @@
     "supportPatreon": "Support on Patreon",
     "files": "Files",
     "fileLocked": "Needs {tier}",
-    "downloadsSoon": "Downloads are coming soon.",
     "publishedOn": "Published {date}",
     "open": "Open gallery"
+  },
+  "Downloads": {
+    "download": "Download",
+    "downloadOriginal": "Download original",
+    "signInToDownload": "Sign in to download",
+    "notice": "Each download is personal: the file carries an invisible mark that identifies your account.",
+    "started": "Download started",
+    "errors": {
+      "unauthorized": "Sign in to download.",
+      "forbidden": "Your tier does not include this file.",
+      "age": "Confirm that you are 18 or older first.",
+      "not_found": "This file is no longer available.",
+      "rate_limited": "Too many downloads. Try again later.",
+      "failed": "The download failed. Try again."
+    }
   }
 }

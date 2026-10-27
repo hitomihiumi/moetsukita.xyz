@@ -85,3 +85,11 @@ export function isConfigured(group: () => unknown) {
     return false;
   }
 }
+
+/** Downloads: watermark key and per-user limits. */
+export const downloadEnv = lazy("downloads", {
+  /** Keys the watermark layout and the IP hashes. Changing it orphans old watermarks. */
+  WATERMARK_SECRET: z.string().min(16),
+  DOWNLOADS_PER_HOUR: z.coerce.number().int().positive().default(60),
+  DOWNLOADS_PER_DAY: z.coerce.number().int().positive().default(300),
+});

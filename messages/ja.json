@@ -118,8 +118,22 @@
     "supportPatreon": "Patreonで支援",
     "files": "ファイル",
     "fileLocked": "{tier}が必要",
-    "downloadsSoon": "ダウンロードは近日公開予定です。",
     "publishedOn": "{date}公開",
     "open": "ギャラリーを見る"
+  },
+  "Downloads": {
+    "download": "ダウンロード",
+    "downloadOriginal": "原寸をダウンロード",
+    "signInToDownload": "ログインしてダウンロード",
+    "notice": "ダウンロードは個人用です。ファイルにはアカウントを特定する不可視のマークが含まれます。",
+    "started": "ダウンロードを開始しました",
+    "errors": {
+      "unauthorized": "ログインしてください。",
+      "forbidden": "このファイルはあなたのプランに含まれていません。",
+      "age": "先に18歳以上であることを確認してください。",
+      "not_found": "このファイルは利用できません。",
+      "rate_limited": "ダウンロードが多すぎます。しばらくしてからお試しください。",
+      "failed": "ダウンロードに失敗しました。もう一度お試しください。"
+    }
   }
 }

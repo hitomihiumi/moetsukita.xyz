@@ -8,5 +8,7 @@ export const adminNav: AdminNavLink[] = [
   { href: "/admin/tags", label: "Tags", icon: "tag" },
   { href: "/admin/tiers", label: "Tiers", icon: "star", adminOnly: true },
   { href: "/admin/users", label: "Users", icon: "people", adminOnly: true },
+  { href: "/admin/downloads", label: "Downloads", icon: "download", adminOnly: true },
+  { href: "/admin/leaks", label: "Leak check", icon: "security", adminOnly: true },
   { href: "/admin/audit", label: "Audit log", icon: "document", adminOnly: true },
 ];

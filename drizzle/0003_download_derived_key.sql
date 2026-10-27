@@ -1,0 +1,2 @@
+ALTER TABLE "downloads" ADD COLUMN "derived_key" text;--> statement-breakpoint
+CREATE INDEX "downloads_user_id_asset_id_idx" ON "downloads" USING btree ("user_id","asset_id","created_at" DESC NULLS LAST);

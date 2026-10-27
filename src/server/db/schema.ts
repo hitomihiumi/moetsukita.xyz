@@ -275,6 +275,8 @@ export const downloads = pgTable(
     userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
     assetId: uuid("asset_id").references(() => assets.id, { onDelete: "set null" }),
     watermark: bigint("watermark", { mode: "bigint" }).unique(),
+    /** The watermarked copy handed out; repeat downloads within a day reuse it. */
+    derivedKey: text("derived_key"),
     /** Keyed hash of the client IP: enough to spot sharing, not to locate anyone. */
     ipHash: text("ip_hash"),
     userAgent: text("user_agent"),
@@ -283,6 +285,7 @@ export const downloads = pgTable(
   (t) => [
     index("downloads_user_id_created_at_idx").on(t.userId, t.createdAt.desc()),
     index("downloads_created_at_idx").on(t.createdAt.desc()),
+    index("downloads_user_id_asset_id_idx").on(t.userId, t.assetId, t.createdAt.desc()),
   ],
 );
 
