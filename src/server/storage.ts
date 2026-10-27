@@ -254,3 +254,9 @@ export async function deleteObjects(keys: string[], scope?: BucketScope) {
 export function storageClient() {
   return { client: s3(), bucket: bucket("private"), publicBucket: bucket("public") };
 }
+
+/** A short-lived URL to show a private preview in the browser; null when there is none. */
+export async function previewUrl(key: string | null) {
+  if (!key) return null;
+  return presignDownload({ key, expiresIn: urlTtl.view });
+}

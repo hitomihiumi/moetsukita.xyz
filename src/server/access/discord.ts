@@ -45,3 +45,22 @@ export async function fetchMemberRoles(params: {
   }
   throw new DiscordUnavailableError("Discord API rate limit");
 }
+
+/** The server's roles, for mapping them to tiers in the admin panel. */
+export async function fetchGuildRoles(params: { guildId: string; botToken: string }) {
+  const response = await fetch(`${API}/guilds/${params.guildId}/roles`, {
+    headers: { Authorization: `Bot ${params.botToken}`, "User-Agent": "moetsukita.xyz" },
+    cache: "no-store",
+  });
+  if (!response.ok) throw new DiscordUnavailableError(`Discord API ${response.status} for roles`);
+  const roles = (await response.json()) as {
+    id: string;
+    name: string;
+    position: number;
+    managed: boolean;
+  }[];
+  return roles
+    .filter((role) => role.name !== "@everyone")
+    .sort((a, b) => b.position - a.position)
+    .map((role) => ({ id: role.id, name: role.name }));
+}

@@ -6,10 +6,8 @@
  */
 import { createHmac } from "node:crypto";
 import { sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { migrate } from "drizzle-orm/node-postgres/migrator";
-import { Pool } from "pg";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { resetDatabase } from "./helpers";
 
 const url = process.env.TEST_DATABASE_URL;
 
@@ -93,15 +91,7 @@ async function tierRanksBySource() {
 }
 
 describe.skipIf(!url)("entitlement sync", () => {
-  beforeAll(async () => {
-    const pool = new Pool({ connectionString: url, max: 1 });
-    const db = drizzle(pool);
-    await db.execute(sql`drop schema if exists public cascade`);
-    await db.execute(sql`drop schema if exists drizzle cascade`);
-    await db.execute(sql`create schema public`);
-    await migrate(db, { migrationsFolder: "./drizzle" });
-    await pool.end();
-  });
+  beforeAll(() => resetDatabase(url as string));
 
   beforeEach(async () => {
     const db = getDb();

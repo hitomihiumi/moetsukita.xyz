@@ -3,7 +3,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { pickLocalized } from "@/lib/localized";
 import { localizedPath, person } from "@/resources/seo";
 import { signOutAction } from "@/server/auth/actions";
-import { getViewer } from "@/server/auth/viewer";
+import { getViewer, hasRole } from "@/server/auth/viewer";
 import { AccountMenu } from "./AccountMenu";
 
 export async function Header() {
@@ -27,6 +27,7 @@ export async function Header() {
             image={viewer.image}
             subline={viewer.tier ? pickLocalized(viewer.tier.name, locale) : t("free")}
             accountHref={localizedPath(locale, "/account")}
+            adminHref={hasRole(viewer, "editor") ? "/admin" : undefined}
             homePath={localizedPath(locale)}
             signOut={signOutAction}
           />

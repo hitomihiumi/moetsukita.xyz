@@ -9,6 +9,8 @@ type AccountMenuProps = {
   image: string | null;
   subline: string;
   accountHref: string;
+  /** Shown to editors and admins. */
+  adminHref?: string;
   homePath: string;
   signOut: (formData: FormData) => Promise<void>;
 };
@@ -18,6 +20,7 @@ export function AccountMenu({
   image,
   subline,
   accountHref,
+  adminHref,
   homePath,
   signOut,
 }: AccountMenuProps) {
@@ -35,6 +38,7 @@ export function AccountMenu({
         dropdown={
           <Column padding="4" gap="2" minWidth={12}>
             <Option value="account" label={t("account")} href={accountHref} />
+            {adminHref && <Option value="admin" label={t("admin")} href={adminHref} />}
             <Line marginY="4" />
             <Option
               value="sign-out"

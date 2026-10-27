@@ -30,7 +30,8 @@
     "account": "Account",
     "signOut": "Sign out",
     "menu": "Account menu",
-    "free": "Free account"
+    "free": "Free account",
+    "admin": "Admin panel"
   },
   "Login": {
     "title": "Sign in",
