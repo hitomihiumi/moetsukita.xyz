@@ -31,7 +31,8 @@
     "signOut": "ログアウト",
     "menu": "アカウントメニュー",
     "free": "無料アカウント",
-    "admin": "管理画面"
+    "admin": "管理画面",
+    "gallery": "ギャラリー"
   },
   "Login": {
     "title": "ログイン",
@@ -80,5 +81,45 @@
     "discordHint": "Fanbox支援者:Fanboxの設定でDiscordを連携し、サーバーに参加してください。プランのロールでアクセスが決まります。",
     "patreonHint": "Patreon支援者:有効な支援で、あなたのティアに対応するプランが適用されます。",
     "signOut": "ログアウト"
+  },
+  "Gallery": {
+    "title": "ギャラリー",
+    "metaTitle": "ギャラリー",
+    "description": "Moetsukitaの作品。FanboxとPatreonの支援者はプランに応じて閲覧できます。",
+    "searchPlaceholder": "タイトルやタグで検索",
+    "search": "検索",
+    "tags": "タグ",
+    "noTags": "タグなし",
+    "rating": {
+      "all": "すべて",
+      "sfw": "全年齢",
+      "nsfw": "R-18"
+    },
+    "mine": "閲覧可能な作品のみ",
+    "sort": {
+      "new": "新しい順",
+      "old": "古い順"
+    },
+    "results": "{count, plural, =0 {作品なし} other {#件}}",
+    "empty": "条件に一致する作品はありません。",
+    "reset": "条件をクリア",
+    "images": "{count}枚",
+    "locked": "{tier}以上",
+    "nsfwHidden": "R-18作品は非表示です。",
+    "confirmAge": "18歳以上です",
+    "ageTitle": "成人向けの作品です",
+    "ageDescription": "R-18コンテンツを含みます。18歳以上であることを確認してください。",
+    "back": "ギャラリーに戻る",
+    "lockedTitle": "{tier}プランの支援者向け",
+    "lockedDescription": "このプランでFanboxまたはPatreonから支援し、ログインすると全体を閲覧できます。",
+    "signIn": "ログイン",
+    "checkAccess": "アクセスを確認",
+    "supportFanbox": "Fanboxで支援",
+    "supportPatreon": "Patreonで支援",
+    "files": "ファイル",
+    "fileLocked": "{tier}が必要",
+    "downloadsSoon": "ダウンロードは近日公開予定です。",
+    "publishedOn": "{date}公開",
+    "open": "ギャラリーを見る"
   }
 }

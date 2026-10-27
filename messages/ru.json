@@ -31,7 +31,8 @@
     "signOut": "Выйти",
     "menu": "Меню профиля",
     "free": "Бесплатный аккаунт",
-    "admin": "Админка"
+    "admin": "Админка",
+    "gallery": "Галерея"
   },
   "Login": {
     "title": "Вход",
@@ -80,5 +81,45 @@
     "discordHint": "Подписчики Fanbox: привяжите Discord в настройках Fanbox и зайдите на сервер. Уровень даёт роль вашего плана.",
     "patreonHint": "Патроны Patreon: активная подписка даёт уровень, соответствующий вашему тиру.",
     "signOut": "Выйти"
+  },
+  "Gallery": {
+    "title": "Галерея",
+    "metaTitle": "Галерея",
+    "description": "Работы Moetsukita. Подписчики Fanbox и Patreon открывают их в зависимости от уровня.",
+    "searchPlaceholder": "Поиск по названиям и тегам",
+    "search": "Найти",
+    "tags": "Теги",
+    "noTags": "Нет тегов",
+    "rating": {
+      "all": "Все",
+      "sfw": "SFW",
+      "nsfw": "NSFW"
+    },
+    "mine": "Только доступные мне",
+    "sort": {
+      "new": "Сначала новые",
+      "old": "Сначала старые"
+    },
+    "results": "{count, plural, =0 {Нет работ} one {# работа} few {# работы} many {# работ} other {# работы}}",
+    "empty": "Ничего не найдено по этим фильтрам.",
+    "reset": "Сбросить фильтры",
+    "images": "{count, plural, one {# изображение} few {# изображения} many {# изображений} other {# изображения}}",
+    "locked": "От уровня {tier}",
+    "nsfwHidden": "NSFW-работы скрыты.",
+    "confirmAge": "Мне есть 18 лет",
+    "ageTitle": "Работа для взрослых",
+    "ageDescription": "Здесь NSFW-контент. Подтвердите, что вам есть 18 лет.",
+    "back": "Назад в галерею",
+    "lockedTitle": "Для подписчиков уровня {tier}",
+    "lockedDescription": "Поддержите на Fanbox или Patreon на этом уровне и войдите, чтобы открыть работу целиком.",
+    "signIn": "Войти",
+    "checkAccess": "Проверить доступ",
+    "supportFanbox": "Поддержать на Fanbox",
+    "supportPatreon": "Поддержать на Patreon",
+    "files": "Файлы",
+    "fileLocked": "Нужен уровень {tier}",
+    "downloadsSoon": "Скачивание скоро появится.",
+    "publishedOn": "Опубликовано {date}",
+    "open": "Открыть галерею"
   }
 }

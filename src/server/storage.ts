@@ -255,8 +255,16 @@ export function storageClient() {
   return { client: s3(), bucket: bucket("private"), publicBucket: bucket("public") };
 }
 
-/** A short-lived URL to show a private preview in the browser; null when there is none. */
+const PREVIEW_WINDOW_MS = 5 * 60 * 1000;
+
+/**
+ * A short-lived URL to show a private preview in the browser; null when there
+ * is none. Signed at the start of a 5-minute window, so the URL stays the same
+ * across requests in that window and the browser cache can hold the image.
+ */
 export async function previewUrl(key: string | null) {
   if (!key) return null;
-  return presignDownload({ key, expiresIn: urlTtl.view });
+  const signingDate = new Date(Math.floor(Date.now() / PREVIEW_WINDOW_MS) * PREVIEW_WINDOW_MS);
+  const command = new GetObjectCommand({ Bucket: bucket(), Key: key });
+  return getSignedUrl(s3Signer(), command, { expiresIn: urlTtl.view, signingDate });
 }

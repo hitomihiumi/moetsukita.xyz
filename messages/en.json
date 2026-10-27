@@ -31,7 +31,8 @@
     "signOut": "Sign out",
     "menu": "Account menu",
     "free": "Free account",
-    "admin": "Admin panel"
+    "admin": "Admin panel",
+    "gallery": "Gallery"
   },
   "Login": {
     "title": "Sign in",
@@ -80,5 +81,45 @@
     "discordHint": "Fanbox supporters: connect Discord in Fanbox settings and join the server. Your plan's role grants the tier.",
     "patreonHint": "Patrons: an active pledge grants the tier of your Patreon tier.",
     "signOut": "Sign out"
+  },
+  "Gallery": {
+    "title": "Gallery",
+    "metaTitle": "Gallery",
+    "description": "Works by Moetsukita. Supporters on Fanbox and Patreon open them by tier.",
+    "searchPlaceholder": "Search titles and tags",
+    "search": "Search",
+    "tags": "Tags",
+    "noTags": "No tags",
+    "rating": {
+      "all": "All",
+      "sfw": "SFW",
+      "nsfw": "NSFW"
+    },
+    "mine": "Only what I can open",
+    "sort": {
+      "new": "Newest",
+      "old": "Oldest"
+    },
+    "results": "{count, plural, =0 {No works} one {# work} other {# works}}",
+    "empty": "Nothing matches these filters.",
+    "reset": "Clear filters",
+    "images": "{count, plural, one {# image} other {# images}}",
+    "locked": "{tier} and above",
+    "nsfwHidden": "NSFW works are hidden.",
+    "confirmAge": "I am 18 or older",
+    "ageTitle": "This work is for adults",
+    "ageDescription": "It contains NSFW art. Confirm that you are 18 or older to continue.",
+    "back": "Back to gallery",
+    "lockedTitle": "For the {tier} tier and above",
+    "lockedDescription": "Support on Fanbox or Patreon at this tier, then sign in to open the full work.",
+    "signIn": "Sign in",
+    "checkAccess": "Check my access",
+    "supportFanbox": "Support on Fanbox",
+    "supportPatreon": "Support on Patreon",
+    "files": "Files",
+    "fileLocked": "Needs {tier}",
+    "downloadsSoon": "Downloads are coming soon.",
+    "publishedOn": "Published {date}",
+    "open": "Open gallery"
   }
 }

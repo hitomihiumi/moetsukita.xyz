@@ -4,7 +4,6 @@ import {
   Button,
   Column,
   Heading,
-  type IconName,
   Line,
   Media,
   RevealFx,
@@ -14,28 +13,14 @@ import {
 import type { Locale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { baseURL, localizedPath, person } from "@/resources/seo";
-
-type Social = {
-  name: string;
-  url: string;
-  icon: IconName;
-};
-
-const socials: Social[] = [
-  { name: "Twitter (SFW)", url: "https://x.com/a1ttri", icon: "twitter" },
-  { name: "Twitter (NSFW)", url: "https://x.com/a1ttri1", icon: "twitter" },
-  { name: "Pixiv", url: "https://www.pixiv.net/en/users/79540158", icon: "pixiv" },
-  { name: "Fanbox", url: "https://moetsukita.fanbox.cc/", icon: "pixiv" },
-  { name: "Patreon", url: "https://www.patreon.com/c/Moetsukita", icon: "patreon" },
-  { name: "Telegram (RU)", url: "https://t.me/Moetsukita", icon: "telegram" },
-  { name: "Instagram", url: "https://www.instagram.com/1moetsukita/", icon: "instagram" },
-];
+import { socials } from "@/resources/socials";
 
 export default async function Home({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("Home");
   const meta = await getTranslations("Meta");
+  const gallery = await getTranslations("Gallery");
 
   return (
     <Column fill padding="l" gap="24" center>
@@ -78,6 +63,14 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
               </Column>
               <Line />
               <Column horizontal="center" gap="8" maxWidth={16}>
+                <Button
+                  href={localizedPath(locale, "/gallery")}
+                  prefixIcon="grid"
+                  variant="secondary"
+                  fillWidth
+                >
+                  {gallery("open")}
+                </Button>
                 {socials.map((social) => (
                   <Button
                     key={social.url}

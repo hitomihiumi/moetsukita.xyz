@@ -16,11 +16,21 @@ export async function Header() {
   return (
     <Row as="header" fillWidth paddingX="16" paddingY="12" horizontal="center">
       <Row maxWidth="m" horizontal="between" vertical="center" gap="16">
-        <SmartLink href={localizedPath(locale)} unstyled>
-          <Text variant="heading-strong-s" onBackground="neutral-strong">
-            {person.name}
-          </Text>
-        </SmartLink>
+        <Row gap="16" vertical="center">
+          <SmartLink href={localizedPath(locale)} unstyled>
+            <Text variant="heading-strong-s" onBackground="neutral-strong">
+              {person.name}
+            </Text>
+          </SmartLink>
+          <Button
+            href={localizedPath(locale, "/gallery")}
+            variant="tertiary"
+            size="s"
+            prefixIcon="grid"
+          >
+            {t("gallery")}
+          </Button>
+        </Row>
         {viewer ? (
           <AccountMenu
             name={viewer.name ?? t("account")}
