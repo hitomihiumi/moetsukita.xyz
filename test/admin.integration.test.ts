@@ -29,14 +29,12 @@ let actor: string;
 async function newUser(name: string, discordId?: string) {
   const [user] = await getDb().insert(schema.users).values({ name, role: "admin" }).returning();
   if (discordId) {
-    await getDb()
-      .insert(schema.accounts)
-      .values({
-        userId: user.id,
-        type: "oauth",
-        provider: "discord",
-        providerAccountId: discordId,
-      });
+    await getDb().insert(schema.accounts).values({
+      userId: user.id,
+      type: "oauth",
+      provider: "discord",
+      providerAccountId: discordId,
+    });
   }
   return user.id;
 }
