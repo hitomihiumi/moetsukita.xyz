@@ -88,7 +88,8 @@ export function LeakChecker() {
               </Heading>
             </Row>
             <Text variant="body-default-m">
-              Downloaded by <strong>{state.result.user?.name ?? "a deleted user"}</strong>
+              {state.result.kind === "preview" ? "Preview shown to" : "Downloaded by"}{" "}
+              <strong>{state.result.user?.name ?? "a deleted user"}</strong>
               {state.result.downloadedAt &&
                 ` on ${dateTime.format(new Date(state.result.downloadedAt))}`}
               {state.result.file && (

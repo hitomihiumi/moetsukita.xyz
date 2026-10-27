@@ -135,5 +135,10 @@
       "rate_limited": "Too many downloads. Try again later.",
       "failed": "The download failed. Try again."
     }
+  },
+  "Error": {
+    "title": "Something went wrong",
+    "description": "The page could not be loaded. Please try again.",
+    "retry": "Try again"
   }
 }

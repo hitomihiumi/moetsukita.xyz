@@ -20,7 +20,7 @@ import { localizedPath } from "@/resources/seo";
 import { fanboxUrl, patreonUrl } from "@/resources/socials";
 import { getAudience } from "@/server/gallery/audience";
 import { getPublicWork } from "@/server/gallery/works";
-import { previewUrl, publicUrl } from "@/server/storage";
+import { publicUrl } from "@/server/storage";
 
 type Props = { params: Promise<{ locale: Locale; slug: string }> };
 
@@ -103,22 +103,21 @@ export default async function WorkPage({ params }: Props) {
   const others = files.filter((file) => file.kind !== "image");
 
   // Previews are signed only for files the visitor may open; everything else gets the public blur.
-  const shown = await Promise.all(
-    (locked ? images.slice(0, 1) : images).map(async (file) => ({
-      id: file.id,
-      filename: file.filename,
-      size: file.size,
-      locked: file.locked,
-      width: file.width,
-      height: file.height,
-      tier: file.tier ? pickLocalized(file.tier.name, locale) : null,
-      url: file.locked
-        ? file.blurKey
-          ? publicUrl(file.blurKey)
-          : null
-        : await previewUrl(file.previewKey),
-    })),
-  );
+  const shown = (locked ? images.slice(0, 1) : images).map((file) => ({
+    id: file.id,
+    filename: file.filename,
+    size: file.size,
+    locked: file.locked,
+    width: file.width,
+    height: file.height,
+    tier: file.tier ? pickLocalized(file.tier.name, locale) : null,
+    url: file.locked
+      ? file.blurKey
+        ? publicUrl(file.blurKey)
+        : null
+      : // Through the app, which hands signed-in viewers their own watermarked copy.
+        `/api/previews/${file.id}`,
+  }));
 
   return (
     <Column fillWidth paddingX="16" paddingY="32" horizontal="center">

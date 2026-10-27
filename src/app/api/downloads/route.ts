@@ -16,6 +16,10 @@ const status: Record<DownloadErrorCode, number> = {
 
 /** POST { assetId } → { url }: a 90-second link to this visitor's copy of the file. */
 export async function POST(request: Request) {
+  // JSON only: a cross-site form cannot send it without a CORS preflight.
+  if (!request.headers.get("content-type")?.startsWith("application/json")) {
+    return Response.json({ error: "not_found" }, { status: 415 });
+  }
   const parsed = body.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return Response.json({ error: "not_found" }, { status: 400 });
 

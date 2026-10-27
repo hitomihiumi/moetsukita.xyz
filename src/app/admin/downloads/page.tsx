@@ -18,7 +18,7 @@ export default async function DownloadsPage() {
     <Column fillWidth gap="24">
       <PageHeader
         title="Downloads"
-        description={`The last ${rows.length} downloads. Users with more than ${HEAVY} in 24 hours are flagged.`}
+        description={`The last ${rows.length} downloads and personal previews. Users with more than ${HEAVY} entries in 24 hours are flagged.`}
       />
       <Table
         searchable
@@ -47,7 +47,14 @@ export default async function DownloadsPage() {
                 )}
               </Row>,
               <Column key="file" gap="2">
-                <Text variant="label-default-s">{row.filename ?? "deleted file"}</Text>
+                <Row gap="8" vertical="center">
+                  <Text variant="label-default-s">{row.filename ?? "deleted file"}</Text>
+                  {row.kind === "preview" && (
+                    <Tag size="s" scheme="neutral">
+                      preview
+                    </Tag>
+                  )}
+                </Row>
                 <Text variant="body-default-xs" onBackground="neutral-weak">
                   {row.workTitle ? pickLocalized(row.workTitle, "en") : ""}
                 </Text>

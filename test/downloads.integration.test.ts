@@ -27,6 +27,7 @@ vi.mock("@/server/storage", () => ({
     for (const key of keys) objects.delete(key);
   }),
   presignDownload: vi.fn(async ({ key }: { key: string }) => `https://files.test/${key}?signed`),
+  previewUrl: vi.fn(async (key: string) => `https://files.test/${key}?view`),
   presignUpload: vi.fn(async () => "https://files.test/upload"),
   safeFilename: (name: string) => name,
   storageKeys: { derived: (id: string, name: string) => `derived/${id}/${name}` },
@@ -34,7 +35,7 @@ vi.mock("@/server/storage", () => ({
 
 const { getDb } = await import("@/server/db");
 const schema = await import("@/server/db/schema");
-const { issueDownload, DownloadError } = await import("@/server/downloads");
+const { issueDownload, issuePreview, DownloadError } = await import("@/server/downloads");
 const { detectLeak } = await import("@/server/admin/downloads");
 
 type Viewer = Parameters<typeof issueDownload>[0] & object;
@@ -96,6 +97,10 @@ describe.skipIf(!url)("downloads", () => {
       .png()
       .toBuffer();
     objects.set("originals/art.png", art);
+    objects.set(
+      "previews/art/view.webp",
+      await sharp(art).resize(2048).webp({ quality: 85 }).toBuffer(),
+    );
     objects.set("originals/src.psd", Buffer.from("psd"));
     objects.set("originals/n.psd", Buffer.from("psd"));
     const rows = await db
@@ -111,6 +116,7 @@ describe.skipIf(!url)("downloads", () => {
           size: art.length,
           width: 2400,
           height: 1034,
+          previewKey: "previews/art/view.webp",
         },
         {
           workId: work.id,
@@ -202,4 +208,31 @@ describe.skipIf(!url)("downloads", () => {
       found: false,
     });
   }, 120_000);
+
+  it("hands signed-in viewers their own watermarked preview, reused and not rate-limited", async () => {
+    const first = await issuePreview(fan, ids.image, context);
+    const again = await issuePreview(fan, ids.image, context);
+    expect(first).toBe(again);
+    expect(first).toContain("derived/");
+    const rows = await getDb().select().from(schema.downloads);
+    expect(rows).toMatchObject([{ kind: "preview", userId: fan.id }]);
+    for (let i = 0; i < 6; i++) await issuePreview(fan, ids.image, context);
+    await expect(issueDownload(fan, ids.image, context)).resolves.toBeTruthy();
+
+    // A screenshot of the preview, scaled down, still names the viewer.
+    const copy = objects.get(rows[0].derivedKey as string) as Buffer;
+    const shot = await sharp(copy).resize(1600).jpeg({ quality: 85 }).toBuffer();
+    objects.set("leaks/22222222-2222-4222-8222-222222222222/shot.jpg", shot);
+    expect(
+      await detectLeak(fan.id, "leaks/22222222-2222-4222-8222-222222222222/shot.jpg"),
+    ).toMatchObject({
+      found: true,
+      kind: "preview",
+      user: { id: fan.id },
+    });
+  }, 120_000);
+
+  it("refuses previews of locked work to guests", async () => {
+    await expectError(issuePreview(null, ids.image, context), "unauthorized");
+  });
 });

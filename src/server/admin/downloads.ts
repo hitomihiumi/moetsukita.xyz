@@ -20,6 +20,7 @@ export async function listDownloads(limit = 500) {
         createdAt: downloads.createdAt,
         watermark: downloads.watermark,
         reused: downloads.derivedKey,
+        kind: downloads.kind,
         ipHash: downloads.ipHash,
         userId: users.id,
         userName: users.name,
@@ -46,7 +47,9 @@ const LEAK_MAX = 200 * 1024 * 1024;
 
 /** A signed upload for the suspected leak; it goes to storage, not through the function. */
 export async function startLeakCheck(params: { filename: string; mime: string; size: number }) {
-  if (!params.mime.startsWith("image/")) throw new ServiceError("Upload an image");
+  if (!["image/png", "image/jpeg", "image/webp", "image/avif", "image/gif"].includes(params.mime)) {
+    throw new ServiceError("Upload a PNG, JPEG, WebP, AVIF or GIF image");
+  }
   if (params.size <= 0 || params.size > LEAK_MAX) throw new ServiceError("Images up to 200 MB");
   const key = `leaks/${randomUUID()}/${safeFilename(params.filename)}`;
   return {
@@ -92,6 +95,7 @@ export async function detectLeak(actorId: string, key: string) {
       found: true as const,
       watermark: watermark.toString(16),
       downloadedAt: hit?.createdAt.toISOString() ?? null,
+      kind: hit?.kind ?? null,
       user: user ? { id: user.id, name: user.name } : null,
       file: file
         ? { filename: file.filename, workId: file.workId, workTitle: file.workTitle }

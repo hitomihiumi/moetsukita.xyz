@@ -191,3 +191,13 @@ export function allTags() {
     .from(tags)
     .orderBy(asc(tags.category), asc(tags.slug));
 }
+
+/** Published SFW works for the sitemap; NSFW stays out of search engines. */
+export function sitemapWorks() {
+  return getDb()
+    .select({ slug: works.slug, updatedAt: works.updatedAt })
+    .from(works)
+    .where(and(isVisible, eq(works.rating, "sfw")))
+    .orderBy(desc(works.publishedAt))
+    .limit(5000);
+}

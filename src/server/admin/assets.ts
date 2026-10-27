@@ -26,7 +26,7 @@ export const SINGLE_UPLOAD_MAX = 100 * 1024 * 1024;
 export const UPLOAD_MAX = 20 * 1024 * 1024 * 1024;
 
 export type UploadPlan =
-  | { assetId: string; mode: "single"; url: string }
+  | { assetId: string; mode: "single"; url: string; contentType: string }
   | { assetId: string; mode: "multipart"; uploadId: string; partSize: number; urls: string[] };
 
 export async function startUpload(
@@ -49,7 +49,9 @@ export async function startUpload(
 
   const assetId = randomUUID();
   const key = storageKeys.original(params.workId, assetId, params.filename);
-  const mime = params.mime || "application/octet-stream";
+  // Only images keep their type; anything else is stored as opaque bytes so no
+  // client-chosen type (text/html, say) is ever served back from storage.
+  const mime = kind === "image" ? params.mime : "application/octet-stream";
   await db.insert(assets).values({
     id: assetId,
     workId: params.workId,
@@ -69,6 +71,7 @@ export async function startUpload(
     return {
       assetId,
       mode: "single",
+      contentType: mime,
       url: await presignUpload({ key, contentType: mime, contentLength: params.size }),
     };
   }

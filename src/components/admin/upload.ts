@@ -44,7 +44,7 @@ export async function uploadFile(
 
   try {
     if (plan.mode === "single") {
-      await put(plan.url, file, mime, (loaded) => onProgress(loaded / file.size));
+      await put(plan.url, file, plan.contentType, (loaded) => onProgress(loaded / file.size));
       const done = await completeUploadAction({ assetId: plan.assetId });
       if (!done.ok) throw new Error(done.error);
       return;

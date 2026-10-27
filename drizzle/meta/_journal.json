@@ -29,6 +29,13 @@
       "when": 1793102597089,
       "tag": "0003_download_derived_key",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793108724685,
+      "tag": "0004_download_kind",
+      "breakpoints": true
     }
   ]
 }

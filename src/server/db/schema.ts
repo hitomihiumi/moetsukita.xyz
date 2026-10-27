@@ -45,6 +45,7 @@ export const workStatus = pgEnum("work_status", ["draft", "scheduled", "publishe
 export const assetKind = pgEnum("asset_kind", ["image", "archive", "source"]);
 export const assetStatus = pgEnum("asset_status", ["pending", "processing", "ready", "failed"]);
 export const tagCategory = pgEnum("tag_category", ["character", "series", "general", "meta"]);
+export const downloadKind = pgEnum("download_kind", ["file", "preview"]);
 
 // ─── Auth.js (shape required by @auth/drizzle-adapter) ──────────────────────
 
@@ -277,6 +278,8 @@ export const downloads = pgTable(
     watermark: bigint("watermark", { mode: "bigint" }).unique(),
     /** The watermarked copy handed out; repeat downloads within a day reuse it. */
     derivedKey: text("derived_key"),
+    /** A file download, or a personal watermarked preview shown on the work page. */
+    kind: downloadKind("kind").notNull().default("file"),
     /** Keyed hash of the client IP: enough to spot sharing, not to locate anyone. */
     ipHash: text("ip_hash"),
     userAgent: text("user_agent"),
